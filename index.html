@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAE Multiverse: The Engineer’s Odyssey</title>
+  <meta name="description" content="Embark on an RPG-style journey through the CAE Multiverse. Choose your path, defeat bad engineering, collect artifacts, and forge your legend." />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-b7vb8bSS+8e3KfYQS3I0jv8yCw8tZqU5i+QbR4w2Zqv8K2m2y8Qqz7l9wG2ZJrUuC2qfVwqE+uX6J9lQnXo3qA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="bg">
+    <div class="stars"></div>
+    <div class="grid"></div>
+    <div class="vignette"></div>
+  </div>
+  <!-- Loading Overlay -->
+  <div id="loading" class="loading-overlay" aria-live="polite">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <div class="loading-title">Booting Command Center</div>
+      <div class="loading-sub">Calibrating holograms • Plotting CAE multiverse • Initializing HUD</div>
+    </div>
+  </div>
+  <header class="hud">
+    <div class="hud-left">
+      <div class="brand"><span class="logo">∞</span> CAE Multiverse</div>
+      <div class="subtitle">The Engineer’s Odyssey</div>
+    </div>
+    <div class="hud-center">
+      <button id="btn-command" class="hud-btn active">Command Center</button>
+      <button id="btn-legacy" class="hud-btn">Legacy Hall</button>
+      <button id="btn-community" class="hud-btn">Community</button>
+      <button id="btn-inventory" class="hud-btn">Artifacts</button>
+    </div>
+    <div class="hud-right">
+      <label class="toggle">
+        <input id="audioToggle" type="checkbox" />
+        <span>Sound</span>
+      </label>
+      <button id="btn-reset" class="hud-btn small" title="Reset Progress">Reset</button>
+    </div>
+  </header>
+
+  <main id="screen-command" class="screen active">
+    <section class="command-center">
+      <div class="command-layout">
+        <aside class="mission">
+          <div class="mission-header">
+            <h3 class="section-title">Command Briefing</h3>
+            <p class="section-sub">Welcome, Rookie Engineer.</p>
+          </div>
+          <div class="mission-body">
+            <div class="holo-card">
+              <div class="hologram" id="holo-text">
+                <p>“The CAE Multiverse is in peril. Poor designs and chaos plague the worlds. Heroes must rise. Choose your path and forge your legend.”</p>
+                <p class="mentors">— Holograms: Nick Fury · Gandalf · Tony Stark</p>
+              </div>
+            </div>
+            <div class="quick-tips">
+              <h4>How to Play</h4>
+              <ul>
+                <li>Click a realm node on the galaxy map.</li>
+                <li>Read the briefing and open links to learn.</li>
+                <li>Face the boss quiz to unlock artifacts.</li>
+                <li>Collect all 7 to master the Multiverse.</li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+        <div class="galaxy-wrap">
+          <div class="galaxy-header">
+            <h3 class="section-title">Galaxy Navigation</h3>
+            <span class="dim">Select a specialization to begin</span>
+          </div>
+          <div class="galaxy-stage">
+            <canvas id="galaxy" aria-label="Galaxy map of CAE paths"></canvas>
+            <div id="tooltip" class="tooltip" role="dialog" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main id="screen-legacy" class="screen">
+    <section class="legacy-hall">
+      <h2 class="section-title">Legacy Hall</h2>
+      <p class="section-sub">Holographic statues of achievers across realms.</p>
+      <div id="legacy-grid" class="legacy-grid"></div>
+    </section>
+  </main>
+
+  <main id="screen-community" class="screen">
+    <section class="community">
+      <h2 class="section-title">Community Nexus</h2>
+      <div class="community-panels">
+        <div class="panel">
+          <h3>Guilds</h3>
+          <div id="guilds" class="guilds"></div>
+        </div>
+        <div class="panel">
+          <h3>Leaderboards</h3>
+          <ol id="leaderboard" class="leaderboard"></ol>
+        </div>
+        <div class="panel">
+          <h3>World Boss</h3>
+          <p>Weekly multiverse threat requires multi-specialization teamwork.</p>
+          <button id="btn-world-boss" class="primary">Join Raid</button>
+          <div id="raid-status" class="raid-status"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main id="screen-inventory" class="screen">
+    <section class="inventory">
+      <h2 class="section-title">Artifacts</h2>
+      <p class="section-sub">Collect all artifacts to unlock the CAE Infinity Gauntlet.</p>
+      <div id="artifact-gauntlet" class="gauntlet"></div>
+      <div id="artifact-list" class="artifact-list"></div>
+    </section>
+  </main>
+
+  <!-- Path Modal -->
+  <div id="path-modal" class="modal" aria-hidden="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" id="close-path">×</button>
+      <div class="path-header">
+        <div>
+          <h3 id="path-name"></h3>
+          <p id="path-mentor" class="dim"></p>
+        </div>
+        <div class="path-stats">
+          <span id="path-artifact" class="chip"></span>
+          <span id="path-villain" class="chip danger"></span>
+        </div>
+      </div>
+
+      <div class="path-body">
+        <div class="path-col">
+          <h4>Briefing</h4>
+          <p id="path-brief"></p>
+          <ul id="path-links" class="links"></ul>
+          <div class="actions">
+            <button id="btn-quiz" class="primary">Face the Villain</button>
+            <button id="btn-chat" class="secondary">AI Mentor</button>
+          </div>
+        </div>
+        <div class="path-col">
+          <h4>Progress</h4>
+          <div id="path-progress" class="progress-card"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz Modal -->
+  <div id="quiz-modal" class="modal" aria-hidden="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" id="close-quiz">×</button>
+      <h3 id="quiz-title">Boss Battle</h3>
+      <div id="quiz-body" class="quiz"></div>
+      <div class="actions">
+        <button id="submit-quiz" class="primary">Defeat</button>
+      </div>
+      <div id="quiz-result" class="quiz-result"></div>
+    </div>
+  </div>
+
+  <!-- Chat Modal -->
+  <div id="chat-modal" class="modal" aria-hidden="true" role="dialog">
+    <div class="modal-content chat">
+      <button class="modal-close" id="close-chat">×</button>
+      <div class="chat-header">
+        <h3 id="chat-title">AI Mentor</h3>
+        <span id="chat-mentor-sub" class="dim"></span>
+      </div>
+      <div id="chat-log" class="chat-log" aria-live="polite"></div>
+      <div class="chat-input">
+        <input id="chat-text" type="text" placeholder="Ask your mentor..." />
+        <button id="chat-send" class="primary">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Templates -->
+  <template id="tpl-statue">
+    <div class="statue">
+      <div class="bust"></div>
+      <div class="plaque">
+        <div class="name"></div>
+        <div class="title"></div>
+      </div>
+    </div>
+  </template>
+
+  <footer class="footer">
+    <span>v1.0 • CAE Multiverse: The Engineer’s Odyssey • Built for inspiration and learning</span>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

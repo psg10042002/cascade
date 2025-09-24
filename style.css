@@ -1,0 +1,191 @@
+/* CAE Multiverse: Neon Cyberpunk HUD Style */
+:root{
+  --bg:#05060f;
+  --bg-2:#0a0c1a;
+  --grid:#0f1230;
+  --primary:#00e5ff;
+  --accent:#ff00d4;
+  --success:#12ef82;
+  --danger:#ff4d4f;
+  --warning:#ffd166;
+  --text:#e6f1ff;
+  --dim:#8ba0b3;
+  --shadow: 0 0 30px rgba(0,229,255,.25), 0 0 60px rgba(255,0,212,.15);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:"Rajdhani", system-ui, Segoe UI, Roboto, Arial;
+  color:var(--text);
+  background:
+    linear-gradient(180deg, var(--bg), var(--bg-2));
+  overflow:hidden;
+}
+
+/* Cinematic Background Layers */
+.bg{position:fixed; inset:0; z-index:-1; overflow:hidden}
+.bg .stars, .bg .grid, .bg .vignette{position:absolute; inset:0}
+.bg .stars{
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.35) 0 1px, transparent 1px),
+    radial-gradient(circle at 60% 70%, rgba(255,255,255,.25) 0 1px, transparent 1px),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,.18) 0 1px, transparent 1px),
+    radial-gradient(circle at 30% 80%, rgba(255,255,255,.22) 0 1px, transparent 1px);
+  background-size: 400px 400px, 500px 500px, 600px 600px, 700px 700px;
+  animation: twinkle 12s linear infinite;
+  opacity:.6;
+}
+.bg .grid{
+  background:
+    radial-gradient(1200px 800px at 80% -20%, rgba(255,0,212,.12), transparent 60%),
+    radial-gradient(1000px 700px at -10% 120%, rgba(0,229,255,.10), transparent 60%),
+    repeating-linear-gradient(90deg, rgba(0,229,255,.06) 0 1px, transparent 1px 80px),
+    repeating-linear-gradient(0deg, rgba(255,0,212,.06) 0 1px, transparent 1px 80px);
+  filter: blur(0.5px);
+  animation: floatGrid 22s linear infinite;
+}
+.bg .vignette{
+  pointer-events:none;
+  background: radial-gradient(1200px 700px at 50% 30%, transparent 30%, rgba(0,0,0,.25) 70%),
+              radial-gradient(1200px 700px at 50% 120%, transparent 30%, rgba(0,0,0,.35) 70%);
+}
+@keyframes twinkle{0%{transform:translateY(0)}50%{opacity:.45}100%{transform:translateY(-20px)}}
+@keyframes floatGrid{0%{transform:translateY(0)}100%{transform:translateY(-80px)}}
+
+/* HUD Header */
+.hud{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 18px; border-bottom:1px solid #1a2142; background:rgba(9,10,25,.55);
+  backdrop-filter: blur(14px) saturate(120%);
+  position:sticky; top:0; z-index:20;
+}
+.brand{font-family:"Orbitron"; letter-spacing:.14em; font-weight:800; color:var(--primary); display:flex; align-items:center; gap:8px}
+.brand .logo{display:inline-grid; place-items:center; width:26px; height:26px; border-radius:8px; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#07121e; font-weight:900; box-shadow:0 0 12px rgba(0,229,255,.35)}
+.subtitle{font-size:.8rem; color:var(--dim)}
+.hud-center{display:flex; gap:8px}
+.hud-right{display:flex; gap:12px; align-items:center}
+.hud-btn{
+  border:1px solid #223;
+  background:linear-gradient(180deg,#0b0f2a,#0a0c1a);
+  color:var(--text); padding:8px 12px; border-radius:8px;
+  cursor:pointer; box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.hud-btn:hover{transform: translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,.35), 0 0 12px rgba(0,229,255,.15) inset}
+.hud-btn:focus{outline:2px solid var(--accent)}
+.hud-btn.active{border-color:var(--primary); box-shadow:0 0 12px rgba(0,229,255,.5)}
+.hud-btn.small{padding:6px 10px; font-size:.9rem}
+.toggle{display:flex; align-items:center; gap:6px; font-size:.9rem; color:var(--dim)}
+
+/* Screens */
+.screen{position:absolute; inset:56px 0 32px 0; padding:16px; overflow:auto; display:none}
+.screen.active{display:block}
+
+/* Command Center */
+.command-center{position:relative; height:100%; border:1px solid #1a2142; border-radius:14px; padding:16px; background:linear-gradient(180deg,#060817,#070a1a); box-shadow:0 12px 40px rgba(0,0,0,.35), inset 0 0 60px rgba(0,229,255,.06)}
+.command-layout{display:grid; grid-template-columns: 360px 1fr; gap:16px; height:100%}
+.mission{display:flex; flex-direction:column; gap:12px}
+.mission-header{padding:10px 12px; border:1px solid #1a2142; border-radius:12px; background:linear-gradient(180deg,#0a0c1a,#060817); box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.mission-body{display:flex; flex-direction:column; gap:12px}
+.holo-card{border:1px dashed #223; border-radius:12px; background:rgba(0,229,255,.05); padding:12px; box-shadow: inset 0 0 40px rgba(0,229,255,.06)}
+.quick-tips{border:1px solid #1a2142; border-radius:12px; background:linear-gradient(180deg,#0a0c1a,#060817); padding:12px}
+.quick-tips ul{margin:8px 0 0 18px; color:var(--dim)}
+.galaxy-wrap{display:flex; flex-direction:column; min-width:0}
+.galaxy-header{display:flex; align-items:baseline; justify-content:space-between; gap:8px; padding:10px 12px; border:1px solid #1a2142; border-radius:12px; background:linear-gradient(180deg,#0a0c1a,#060817)}
+.galaxy-stage{position:relative; flex:1; margin-top:12px; border:1px solid #1a2142; border-radius:12px; overflow:hidden; background:radial-gradient(900px 600px at 50% 40%, #0a0d28, #060817); box-shadow: inset 0 0 80px rgba(0,229,255,.10), 0 20px 60px rgba(0,0,0,.35)}
+#galaxy{width:100%; height:100%; display:block;}
+.hologram-shell{height:120px; border:1px dashed #223; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; background:rgba(0,229,255,.05)}
+.hologram{font-family:"Orbitron"; color:var(--primary); text-shadow:0 0 12px rgba(0,229,255,.6); text-align:center}
+.hologram .mentors{color:var(--dim); font-family:"Rajdhani"; margin-top:6px}
+
+.tooltip{position:absolute; pointer-events:none; padding:10px 12px; font-size:.95rem; background:rgba(10,15,31,.9); border:1px solid #1a2142; border-radius:10px; color:var(--text); box-shadow:0 8px 24px rgba(0,0,0,.45), 0 0 16px rgba(0,229,255,.15); transform:translate(-50%,-130%); display:none; backdrop-filter: blur(8px)}
+.tooltip .sub{color:var(--dim); font-size:.85rem}
+
+/* Loading Overlay */
+.loading-overlay{position:fixed; inset:0; display:grid; place-items:center; background:rgba(5,6,15,.85); z-index:100; backdrop-filter: blur(6px); transition: opacity .3s ease, visibility .3s ease}
+.loading-overlay.hidden{opacity:0; visibility:hidden}
+.loading-card{border:1px solid #1a2142; border-radius:14px; padding:20px; width:min(420px, 92vw); background:linear-gradient(180deg,#080b1d,#090c1f); box-shadow:0 24px 80px rgba(0,0,0,.5), 0 0 60px rgba(0,229,255,.08)}
+.spinner{width:42px; height:42px; border:3px solid rgba(0,229,255,.25); border-top-color: var(--primary); border-radius:50%; margin:0 auto 12px; animation: spin 1s linear infinite}
+.loading-title{text-align:center; font-family:"Orbitron"; letter-spacing:.08em; margin-bottom:4px}
+.loading-sub{text-align:center; color:var(--dim); font-size:.9rem}
+@keyframes spin{to{transform: rotate(360deg)}}
+
+/* Legacy Hall */
+.legacy-hall{padding:8px}
+.section-title{font-family:"Orbitron"; letter-spacing:.08em}
+.section-sub{color:var(--dim); margin-top:-6px}
+.legacy-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; margin-top:12px}
+.statue{background:linear-gradient(180deg,#0a0c1a,#060817); border:1px solid #1a2142; border-radius:12px; padding:12px; text-align:center; position:relative; overflow:hidden}
+.statue::after{content:""; position:absolute; inset:-2px; border-radius:12px; pointer-events:none; background:conic-gradient(from 180deg, rgba(0,229,255,.12), rgba(255,0,212,.12), rgba(0,229,255,.12)); filter:blur(18px); opacity:.6}
+.bust{height:120px; background:radial-gradient(circle at 50% 30%, rgba(255,255,255,.2), rgba(255,255,255,.05) 40%, transparent 60%), radial-gradient(120px 80px at 50% 80%, rgba(0,229,255,.25), transparent 60%); border-radius:50% 50% 40% 40% / 60% 60% 40% 40%; margin-bottom:8px}
+.plaque{border-top:1px solid #223; padding-top:8px}
+.plaque .name{font-weight:700}
+.plaque .title{color:var(--dim); font-size:.9rem}
+
+/* Community */
+.community-panels{display:grid; grid-template-columns:2fr 1.2fr 1fr; gap:16px}
+.panel{border:1px solid #1a2142; border-radius:12px; padding:12px; background:linear-gradient(180deg,#0a0c1a,#060817); box-shadow:0 8px 30px rgba(0,0,0,.35); transition:transform .12s ease, box-shadow .12s ease; backdrop-filter: blur(6px)}
+.panel:hover{transform:translateY(-2px); box-shadow:0 16px 40px rgba(0,0,0,.45)}
+.guilds{display:flex; flex-wrap:wrap; gap:8px}
+.guild{border:1px solid #223; padding:8px 10px; border-radius:999px; background:rgba(0,229,255,.06)}
+.leaderboard{margin:0; padding-left:20px}
+.raid-status{margin-top:8px; color:var(--dim)}
+
+/* Inventory / Gauntlet */
+.gauntlet{display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin:10px 0}
+.gem-slot{height:64px; border:1px solid #1a2142; border-radius:10px; background:radial-gradient(circle at 50% 30%, rgba(255,255,255,.08), transparent 60%); position:relative; transition:transform .12s ease, box-shadow .12s ease}
+.gem-slot.active{border-color:var(--accent); box-shadow:0 0 18px rgba(255,0,212,.4) inset, 0 0 12px rgba(255,0,212,.25)}
+.gem{position:absolute; inset:8px; border-radius:8px; box-shadow:0 0 16px currentColor, inset 0 0 10px rgba(255,255,255,.2)}
+.gem.mesh{background:linear-gradient(135deg,#00e5ff,#00ffa8); color:#00e5ff}
+.gem.endurance{background:linear-gradient(135deg,#ffb703,#ffd166); color:#ffd166}
+.gem.impact{background:linear-gradient(135deg,#ff0054,#ff4d4f); color:#ff4d4f}
+.gem.harmony{background:linear-gradient(135deg,#845ef7,#60a5fa); color:#60a5fa}
+.gem.flow{background:linear-gradient(135deg,#00f5d4,#00bbf9); color:#00bbf9}
+.gem.energy{background:linear-gradient(135deg,#7bdff2,#b2f7ef); color:#7bdff2}
+.gem.optim{background:linear-gradient(135deg,#ff00d4,#9d4edd); color:#ff00d4}
+
+/* Modal */
+.modal{position:fixed; inset:0; background:rgba(3,6,20,.6); backdrop-filter: blur(6px); display:none; align-items:center; justify-content:center; z-index:50}
+.modal .modal-content{width:min(960px,92vw); max-height:86vh; overflow:auto; border:1px solid #213; border-radius:14px; background:linear-gradient(180deg,#080b1d,#090c1f); padding:16px; box-shadow:0 24px 80px rgba(0,0,0,.5), 0 0 60px rgba(0,229,255,.08); backdrop-filter: blur(10px)}
+.modal .modal-content.chat{width:min(720px,92vw)}
+.modal.show{display:flex}
+.modal-close{float:right; border:1px solid #223; background:#0b0f2a; color:var(--text); border-radius:8px; padding:4px 10px; cursor:pointer; transition:transform .12s ease}
+.modal-close:hover{transform:scale(1.06)}
+.path-header{display:flex; align-items:center; justify-content:space-between; gap:12px}
+.chip{border:1px solid #224; padding:4px 8px; border-radius:999px; color:var(--primary)}
+.chip.danger{color:var(--danger); border-color:#3a1b1c}
+.path-body{display:grid; grid-template-columns:1.3fr .8fr; gap:16px; margin-top:12px}
+.progress-card{border:1px solid #1a2142; border-radius:10px; padding:10px; min-height:120px; background:linear-gradient(180deg,#0a0c1a,#060817)}
+.links{margin:0; padding-left:18px}
+.actions{display:flex; gap:8px; margin-top:10px}
+.primary, .secondary{border:1px solid #224; padding:10px 14px; border-radius:10px; cursor:pointer; transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease}
+.primary{background:linear-gradient(180deg,#022a2e,#032126); color:#aef; border-color:#0a3e49; box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.secondary{background:linear-gradient(180deg,#2a022e,#210326); color:#fae; border-color:#3e0a49; box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.primary:hover{transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,229,255,.18)}
+.secondary:hover{transform:translateY(-1px); box-shadow:0 8px 24px rgba(255,0,212,.18)}
+
+/* Quiz */
+.quiz .q{margin:10px 0; padding:10px; border:1px solid #1a2142; border-radius:10px; background:#0a0c1a}
+.quiz label{display:block; margin:6px 0}
+.quiz-result{margin-top:10px; font-weight:700}
+
+/* Chat */
+.chat-log{border:1px solid #1a2142; border-radius:10px; padding:10px; height:340px; overflow:auto; background:linear-gradient(180deg,#060817,#070a1a); box-shadow: inset 0 0 40px rgba(0,229,255,.05)}
+.msg{display:flex; gap:8px; margin:8px 0}
+.msg .bubble{padding:8px 10px; border-radius:10px; max-width:72%;}
+.msg.user .bubble{background:#113; border:1px solid #225; margin-left:auto}
+.msg.bot .bubble{background:#131; border:1px solid #252;}
+.msg .role{font-size:.8rem; color:var(--dim)}
+.chat-input{display:flex; gap:8px; margin-top:8px}
+.chat-input input{flex:1; border:1px solid #223; background:#0b0f2a; color:var(--text); padding:8px 10px; border-radius:8px}
+
+/* Footer */
+.footer{position:fixed; bottom:0; left:0; right:0; height:28px; display:flex; align-items:center; justify-content:center; color:var(--dim); font-size:.85rem; border-top:1px solid #1a2142; background:rgba(9,10,25,.7); backdrop-filter: blur(10px)}
+
+/* Responsive */
+@media (max-width: 980px){
+  .community-panels{grid-template-columns:1fr;}
+  .path-body{grid-template-columns:1fr}
+  .gauntlet{grid-template-columns:repeat(4,1fr)}
+}
